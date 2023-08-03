@@ -1,0 +1,32 @@
+.container {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+h1 {
+  text-align: center;
+}
+
+div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+}
+
+#result {
+  margin-top: 20px;
+}
