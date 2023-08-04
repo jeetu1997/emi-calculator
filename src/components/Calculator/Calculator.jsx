@@ -21,21 +21,40 @@ export default function Calculator({ loanState }) {
 
   const handleLoanAmountChange = (event) => {
     const amount = parseInt(event.target.value);
-    if (amount >= loan.min && amount <= loan.max) {
+    if (event.target.value === "") {
+      setLoanAmount("");
+    } else if (/^\d+$/.test(amount) && amount <= loan.max) {
       setLoanAmount(amount);
     }
   };
 
   const handleInterestRateChange = (event) => {
+    const value = event.target.value;
     const rate = parseFloat(event.target.value);
-    if (rate >= interest.min && rate <= interest.max) {
+    if (value === "") {
+      setInterestRate("");
+    } else if (/^\d\.$/.test(value)) {
+      setInterestRate(value);
+    } else if (
+      /^\d+(\.\d{1,2})?$/.test(rate) &&
+      //rate >= interest.min &&
+      rate <= interest.max
+    ) {
       setInterestRate(rate);
     }
   };
 
   const handleLoanTenureYearsChange = (event) => {
+    const value = event.target.value;
     const tenureYears = parseInt(event.target.value);
-    if (tenureYears >= tenure.min && tenureYears <= tenure.max) {
+    if (value === "") {
+      setLoanTenureYears("");
+      //setLoanTenureMonths();
+    } else if (
+      /^\d+$/.test(value) &&
+      //tenureYears >= tenure.min &&
+      tenureYears <= tenure.max
+    ) {
       setLoanTenureYears(tenureYears);
       setLoanTenureMonths(tenureYears * 12);
     }
@@ -67,7 +86,7 @@ export default function Calculator({ loanState }) {
       <div>
         <label htmlFor="loan-amount">Loan Amount</label>
         <input
-          type="number"
+          type="text"
           id="loan-amount"
           min={loan.min}
           max={loan.max}
@@ -86,11 +105,8 @@ export default function Calculator({ loanState }) {
       <div>
         <label htmlFor="interest-rate">Interest Rate (%)</label>
         <input
-          type="number"
+          type="text"
           id="interest-rate"
-          min={interest.min}
-          max={interest.max}
-          step="0.5"
           value={interestRate}
           onChange={handleInterestRateChange}
         />
@@ -106,7 +122,7 @@ export default function Calculator({ loanState }) {
       <div>
         <label htmlFor="loan-tenure">Loan Tenure (Years)</label>
         <input
-          type="number"
+          type="text"
           id="loan-tenure"
           min={tenure.min}
           max={tenure.max}
@@ -122,9 +138,17 @@ export default function Calculator({ loanState }) {
         />
       </div>
       <div id="result">
-        <p>Monthly EMI: {Math.ceil(monthlyEMI)}</p>
-        <p>Total Interest Payable: {Math.ceil(totalInterest)}</p>
-        <p>Total Payment: {Math.ceil(monthlyEMI * loanTenureMonths)}</p>
+        <p>Monthly EMI: {isNaN(monthlyEMI) ? "" : Math.ceil(monthlyEMI)}</p>
+        <p>
+          Total Interest Payable:{" "}
+          {isNaN(totalInterest) ? "" : Math.ceil(totalInterest)}
+        </p>
+        <p>
+          Total Payment:{" "}
+          {isNaN(monthlyEMI * loanTenureMonths)
+            ? ""
+            : Math.ceil(monthlyEMI * loanTenureMonths)}
+        </p>
       </div>
     </div>
   );
