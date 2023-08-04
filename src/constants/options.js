@@ -1,4 +1,4 @@
-import { homeLoan, carLoan } from "./loanState";
+import { homeLoan, carLoan, personalLoan, lapLoan } from "./loanState";
 
 export const options = [
   {
@@ -18,22 +18,27 @@ export const options = [
       {
         id: 3,
         name: "Education/Higher Studies",
+        state: personalLoan,
       },
       {
         id: 4,
         name: "Wedding/Holiday/Travel Abroad",
+        state: personalLoan,
       },
       {
         id: 5,
         name: "Medical Expenses/Personal Requirement",
+        state: personalLoan,
       },
       {
         id: 6,
         name: "Against Securities/Mutual Fund/Fixed Deposit",
+        state: lapLoan,
       },
       {
         id: 7,
         name: "Buy Household Goods/Gadgets",
+        state: personalLoan,
       },
     ],
   },

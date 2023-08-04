@@ -4,13 +4,15 @@ import { options } from "./constants/options";
 
 export default function App() {
   const [dd, setDd] = useState(options[0]);
-  const [loanState, setLoanState] = useState(dd.items[0].state);
+  const [val, setVal] = useState(0);
   const handleChange = (e) => {
     setDd(options[Number(e.target.value)]);
+    setVal(0);
   };
   const handleFor = (e) => {
-    setLoanState(dd.items[e.target.value].state);
+    setVal(e.target.value);
   };
+
   return (
     <div className="container">
       <div
@@ -34,7 +36,7 @@ export default function App() {
         </div>
         <div>
           <label>for</label>
-          <select onChange={handleFor}>
+          <select onChange={handleFor} value={val}>
             {dd.items.map((res, index) => {
               return (
                 <option key={res.id} value={index}>
@@ -45,7 +47,7 @@ export default function App() {
           </select>
         </div>
       </div>
-      <Calculator loanState={loanState} />
+      <Calculator loanState={dd.items[val].state} />
     </div>
   );
 }
