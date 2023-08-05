@@ -9,6 +9,7 @@ export default function InputComponent({
   value,
   step,
   range = [],
+  symbol,
 }) {
   return (
     <div className={className}>
@@ -20,7 +21,7 @@ export default function InputComponent({
           {label}
         </label>
         <div className="it-w-1/2 it-flex it-justify-end it-items-center">
-          <label className="it-font-bold it-text-lg it-mr-3">₹</label>
+          <label className="it-font-bold it-text-lg it-mr-3">{symbol}</label>
           <input
             type="text"
             id="loan-amount"

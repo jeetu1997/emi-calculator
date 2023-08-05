@@ -76,7 +76,7 @@ export default function Calculator() {
         datasets: [
           {
             ...prevData.datasets[0],
-            data: [totalInterest, parseFloat(loanAmount) - totalInterest],
+            data: [totalInterest, parseFloat(loanAmount)],
           },
         ],
       }));
@@ -114,7 +114,7 @@ export default function Calculator() {
           label: (context) => {
             const value = context.formattedValue;
             const label = context.label;
-            return `${label}: $${value}`;
+            return `${label}: ${value}`;
           },
         },
       },
@@ -130,9 +130,9 @@ export default function Calculator() {
   return (
     <div className="it-mt-20">
       <div className="it-flex it-flex-wrap">
-        <div className="it-w-full lg:it-w-5/12 it-px-5">
+        <div className="it-w-full lg:it-w-5/12 sm:it-px-5">
           <InputComponent
-            className={"it-mb-8"}
+            className={"it-mb-10"}
             label={"Loan Amount"}
             value={loanAmount}
             onChange={handleLoanAmountChange}
@@ -140,45 +140,56 @@ export default function Calculator() {
             min={loan.min}
             max={loan.max}
             range={loan.range}
+            symbol={"₹"}
           />
 
           <InputComponent
-            className={"it-mb-8"}
-            label={"Interest Rate (%)"}
+            className={"it-mb-10"}
+            label={"Interest Rate"}
             value={interestRate}
             onChange={handleInterestRateChange}
             step="0.1"
             min={interest.min}
             max={interest.max}
             range={interest.range}
+            symbol={"%"}
           />
 
           <InputComponent
-            label={"Loan Tenure (Years)"}
+            label={"Loan Tenure"}
             value={loanTenureYears}
             onChange={handleLoanTenureYearsChange}
             step="0"
             min={tenure.min}
             max={tenure.max}
             range={tenure.range}
+            symbol={"Yrs"}
           />
         </div>
-        <div className="it-w-full lg:it-w-7/12 it-px-5">
-          <div className="it-h-full it-py-10 it-px-5 it-shadow-lg">
-            <div className="it-flex it-flex-wrap it-min-h-[300px]">
-              <div className="lg:it-w-1/2 it-px-4">
-                <Doughnut data={chartData} options={chartOptions} />
-              </div>
-              <div className="lg:it-w-1/2 it-px-4">
-                <div id="result">
-                  <p className=" it-flex it-justify-between it-p-2 it-text-lg">
-                    <label>Monthly EMI</label>{" "}
-                    <label className="it-font-bold">
+        <div className="it-w-full lg:it-w-7/12 sm:it-px-5">
+          <div className="it-h-full it-py-10 it-px-5 it-shadow-lg it-rounded-xl">
+            <div className="it-flex it-flex-wrap it-items-center it-justify-center">
+              <div className="it-w-full lg:it-w-1/2 sm:it-px-4 ">
+                <div className="it-relative it-mb-6 it-min-h-[320px]">
+                  <Doughnut data={chartData} options={chartOptions} />
+                  <div className="it-text-center it-absolute it-top-[50%] it-left-[50%] it-translate-x-[-50%] it-translate-y-[-50%]">
+                    <label className="it-text-lg it-block it-font-bold">
+                      New EMI
+                    </label>
+                    <label className="it-text-4xl it-font-bold">
                       {isNaN(monthlyEMI) ? "" : Math.ceil(monthlyEMI)}
                     </label>
+                  </div>
+                </div>
+              </div>
+              <div className="it-w-full lg:it-w-1/2 sm:it-px-4">
+                <div id="result">
+                  <p className=" it-flex it-justify-between it-p-2 it-text-lg">
+                    <label>Principal Amount</label>{" "}
+                    <label className="it-font-bold">{loanAmount}</label>
                   </p>
                   <p className="it-flex it-justify-between it-p-2 it-text-lg">
-                    <label>Total Interest Payable </label>
+                    <label>Total Interest </label>
                     <label className="it-font-bold">
                       {isNaN(totalInterest) ? "" : Math.ceil(totalInterest)}
                     </label>
