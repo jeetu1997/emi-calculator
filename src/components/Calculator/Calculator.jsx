@@ -3,7 +3,22 @@ import { loanState as _loanState } from "../../constants/loanState";
 import InputComponent from "./InputComponent";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-Chart.register(ArcElement, Tooltip, Legend);
+const plugin = {
+  id: "increase-legend-spacing",
+  beforeInit(chart) {
+    // Get reference to the original fit function
+    const originalFit = chart.legend.fit;
+
+    // Override the fit function
+    chart.legend.fit = function fit() {
+      // Call original function and bind scope in order to use `this` correctly inside it
+      originalFit.bind(chart.legend)();
+      // Change the height as suggested in another answers
+      this.height += 20;
+    };
+  },
+};
+Chart.register(ArcElement, Tooltip, Legend, plugin);
 
 export default function Calculator() {
   const { loan, interest, tenure } = _loanState;
@@ -19,8 +34,8 @@ export default function Calculator() {
     datasets: [
       {
         data: [0, 0],
-        backgroundColor: ["#0f63ac", "#36A2EB"],
-        hoverBackgroundColor: ["#0f63ac", "#36A2EB"],
+        backgroundColor: ["#0f63ac", "#e9e9e9"],
+        hoverBackgroundColor: ["#0f63ac", "#e9e9e9"],
       },
     ],
   });
@@ -107,7 +122,7 @@ export default function Calculator() {
 
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     plugins: {
       tooltip: {
         callbacks: {
@@ -119,91 +134,102 @@ export default function Calculator() {
         },
       },
     },
-    cutout: "85%", // Adjust the size of the doughnut hole
+    cutout: "80%", // Adjust the size of the doughnut hole
     elements: {
       arc: {
-        borderWidth: 2, // Customize the border width
+        borderWidth: 0, // Customize the border width
       },
     },
   };
 
   return (
-    <div className="it-mt-20">
-      <div className="it-flex it-flex-wrap">
-        <div className="it-w-full lg:it-w-5/12 sm:it-px-5">
-          <InputComponent
-            className={"it-mb-10"}
-            label={"Loan Amount"}
-            value={loanAmount}
-            onChange={handleLoanAmountChange}
-            step="1000"
-            min={loan.min}
-            max={loan.max}
-            range={loan.range}
-            symbol={"₹"}
-          />
+    <div className="it-flex it-flex-wrap">
+      <div className="it-w-full lg:it-w-5/12 sm:it-px-5 lg:it-mb-0 it-mb-8">
+        <InputComponent
+          className={"it-mb-10"}
+          label={"Loan Amount"}
+          value={loanAmount}
+          onChange={handleLoanAmountChange}
+          step="1000"
+          min={loan.min}
+          max={loan.max}
+          range={loan.range}
+          symbol={"₹"}
+        />
 
-          <InputComponent
-            className={"it-mb-10"}
-            label={"Interest Rate"}
-            value={interestRate}
-            onChange={handleInterestRateChange}
-            step="0.1"
-            min={interest.min}
-            max={interest.max}
-            range={interest.range}
-            symbol={"%"}
-          />
+        <InputComponent
+          className={"it-mb-10"}
+          label={"Interest Rate"}
+          value={interestRate}
+          onChange={handleInterestRateChange}
+          step="0.1"
+          min={interest.min}
+          max={interest.max}
+          range={interest.range}
+          symbol={"%"}
+        />
 
-          <InputComponent
-            label={"Loan Tenure"}
-            value={loanTenureYears}
-            onChange={handleLoanTenureYearsChange}
-            step="0"
-            min={tenure.min}
-            max={tenure.max}
-            range={tenure.range}
-            symbol={"Yrs"}
-          />
-        </div>
-        <div className="it-w-full lg:it-w-7/12 sm:it-px-5">
-          <div className="it-h-full it-py-10 it-px-5 it-shadow-lg it-rounded-xl">
-            <div className="it-flex it-flex-wrap it-items-center it-justify-center">
-              <div className="it-w-full lg:it-w-1/2 sm:it-px-4 ">
-                <div className="it-relative it-mb-6 it-min-h-[320px]">
+        <InputComponent
+          label={"Loan Tenure"}
+          value={loanTenureYears}
+          onChange={handleLoanTenureYearsChange}
+          step="0"
+          min={tenure.min}
+          max={tenure.max}
+          range={tenure.range}
+          symbol={"Yrs"}
+        />
+      </div>
+      <div className="it-w-full lg:it-w-7/12 sm:it-px-5">
+        <div
+          className="it-h-full it-py-10 it-px-5 it-rounded-xl it-flex it-items-center it-justify-center"
+          style={{ boxShadow: "0 0 8px 1px #e3e3e3" }}
+        >
+          <div className="it-flex it-flex-wrap it-items-center it-justify-center it-w-full">
+            <div className="it-w-full lg:it-w-1/2 sm:it-px-4">
+              <div className=" it-mb-6 lg:it-border-r-2 it-border-[#e3e3e3]">
+                <div className="it-max-w-[230px] it-relative it-mx-auto">
                   <Doughnut data={chartData} options={chartOptions} />
-                  <div className="it-text-center it-absolute it-top-[50%] it-left-[50%] it-translate-x-[-50%] it-translate-y-[-50%]">
-                    <label className="it-text-lg it-block it-font-bold">
+                  <div className="it-text-center it-absolute it-top-[65%] it-left-[50%] it-translate-x-[-50%] it-translate-y-[-50%]">
+                    <label className="it-text-sm it-block it-font-bold">
                       New EMI
                     </label>
-                    <label className="it-text-4xl it-font-bold">
+                    <label className="it-text-3xl it-font-bold">
                       {isNaN(monthlyEMI) ? "" : Math.ceil(monthlyEMI)}
                     </label>
                   </div>
                 </div>
               </div>
-              <div className="it-w-full lg:it-w-1/2 sm:it-px-4">
-                <div id="result">
-                  <p className=" it-flex it-justify-between it-p-2 it-text-lg">
-                    <label>Principal Amount</label>{" "}
-                    <label className="it-font-bold">{loanAmount}</label>
-                  </p>
-                  <p className="it-flex it-justify-between it-p-2 it-text-lg">
-                    <label>Total Interest </label>
-                    <label className="it-font-bold">
-                      {isNaN(totalInterest) ? "" : Math.ceil(totalInterest)}
-                    </label>
-                  </p>
-                  <div className="it-h-[1px] it-bg-black it-my-6"></div>
-                  <p className="it-bg-blue-200 it-flex it-justify-between it-items-center it-py-2 it-px-4 it-text-lg it-rounded-lg ">
-                    <label>Total Payment</label>
-                    <label className="it-font-bold">
-                      {isNaN(monthlyEMI * loanTenureMonths)
-                        ? ""
-                        : Math.ceil(monthlyEMI * loanTenureMonths)}
-                    </label>
-                  </p>
-                </div>
+            </div>
+            <div className="it-w-full lg:it-w-1/2 sm:it-px-4">
+              <div
+                id="result"
+                className="[&>p]:it-mb-4 [&>p>label]:it-font-bold"
+              >
+                <p className="it-bg-[#0f63ac1a] it-rounded-lg it-flex it-justify-between it-py-2 it-px-4 it-text-lg">
+                  <label>Loan EMI</label>
+                  <label>
+                    {isNaN(monthlyEMI) ? "" : Math.ceil(monthlyEMI)}
+                  </label>
+                </p>
+                <p className="it-flex it-justify-between it-px-2 it-text-lg">
+                  <label>Principal Amount</label> <label>{loanAmount}</label>
+                </p>
+                <p className="it-flex it-justify-between it-px-2 it-text-lg">
+                  <label>Total Interest </label>
+                  <label>
+                    {isNaN(totalInterest) ? "" : Math.ceil(totalInterest)}
+                  </label>
+                </p>
+                <div className="it-h-[1px] it-bg-[#e3e3e3] it-my-4"></div>
+                <p className="it-flex it-justify-between it-px-2 it-items-center it-text-lg it-rounded-lg">
+                  <label>Total Payment</label>
+                  <label>
+                    {isNaN(monthlyEMI * loanTenureMonths)
+                      ? ""
+                      : Math.ceil(monthlyEMI * loanTenureMonths)}
+                  </label>
+                </p>
               </div>
             </div>
           </div>

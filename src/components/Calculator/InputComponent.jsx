@@ -27,7 +27,7 @@ export default function InputComponent({
             id="loan-amount"
             value={value}
             onChange={onChange}
-            className="it-border-2 it-border-gray-400 it-p-2 it-rounded-lg it-w-[100px] it-text-right"
+            className="!it-border !it-border-[#0f63ac] !it-p-2 !it-rounded-lg !it-w-[100px] !it-text-right focus:!it-border-[#000]"
           />
         </div>
       </div>
