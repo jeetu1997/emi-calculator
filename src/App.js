@@ -1,4 +1,5 @@
 import Calculator from "./components/Calculator/Calculator";
+import BalanceTransfer from "./components/Calculator/Balance";
 
 export default function App() {
   return (
